@@ -1,0 +1,338 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+// Generate paths for static build - in production these would come from API
+export function getStaticPaths() {
+  return [
+    { params: { id: '1' } },
+    { params: { id: '2' } },
+    { params: { id: '3' } },
+    { params: { id: '4' } },
+    { params: { id: '5' } },
+    { params: { id: '6' } },
+    { params: { id: '7' } },
+    { params: { id: '8' } },
+  ];
+}
+
+const { id } = Astro.params;
+
+// Sample property data - in production this would fetch from API
+const property = {
+  id,
+  title: 'Luxury Oceanfront Villa with Stunning Views',
+  description: `Experience the ultimate beachfront getaway in this stunning oceanfront villa. Wake up to breathtaking sunrise views over the ocean from your private balcony.
+
+This spacious 4-bedroom, 3.5-bathroom villa features modern amenities and elegant decor throughout. The open-concept living area flows seamlessly to the expansive outdoor terrace, perfect for entertaining or relaxing while watching the waves.
+
+The gourmet kitchen is fully equipped with high-end appliances, ideal for preparing meals with fresh local ingredients. Each bedroom offers premium bedding and en-suite bathrooms for maximum comfort and privacy.
+
+Enjoy direct beach access, a private pool, hot tub, and beautifully landscaped gardens. The property also includes a dedicated parking area and a concierge service to help plan your perfect vacation.`,
+  propertyType: 'Villa',
+  address: '123 Ocean Drive',
+  city: 'Malibu',
+  state: 'California',
+  country: 'United States',
+  pricePerNight: 450,
+  bedrooms: 4,
+  bathrooms: 3.5,
+  maxGuests: 8,
+  rating: 4.9,
+  reviewCount: 128,
+  amenities: ['WiFi', 'Pool', 'Beach Access', 'Air Conditioning', 'Kitchen', 'Free Parking', 'Hot Tub', 'Ocean View', 'Washer', 'Dryer'],
+  rules: ['No smoking', 'No parties', 'Pets allowed', 'Check-in after 3 PM', 'Check-out before 11 AM'],
+  images: [
+    { url: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200', caption: 'Exterior View' },
+    { url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200', caption: 'Living Room' },
+    { url: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200', caption: 'Bedroom' },
+    { url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200', caption: 'Kitchen' },
+    { url: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200', caption: 'Pool' },
+  ],
+  host: {
+    id: 'host1',
+    name: 'Michael Johnson',
+    avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200',
+    joinedDate: 'January 2020',
+    responseRate: 98,
+    responseTime: 'within an hour',
+  },
+};
+
+const amenityIcons: Record<string, string> = {
+  'WiFi': '📶',
+  'Pool': '🏊',
+  'Beach Access': '🏖️',
+  'Air Conditioning': '❄️',
+  'Kitchen': '🍳',
+  'Free Parking': '🅿️',
+  'Hot Tub': '♨️',
+  'Ocean View': '🌊',
+  'Washer': '🧺',
+  'Dryer': '👕',
+};
+---
+
+<BaseLayout title={`${property.title} | Apartments`}>
+  <Header />
+  
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Property Title -->
+    <div class="mb-6">
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-900">{property.title}</h1>
+      <div class="flex flex-wrap items-center gap-4 mt-2 text-sm">
+        <div class="flex items-center gap-1">
+          <svg class="w-4 h-4 text-primary-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+          </svg>
+          <span class="font-medium">{property.rating}</span>
+          <span class="text-gray-500">({property.reviewCount} reviews)</span>
+        </div>
+        <span class="text-gray-300">·</span>
+        <span class="text-gray-600">{property.city}, {property.state}, {property.country}</span>
+        <div class="flex items-center gap-2 ml-auto">
+          <button class="flex items-center gap-1 text-gray-600 hover:text-gray-900">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+            </svg>
+            Share
+          </button>
+          <button class="flex items-center gap-1 text-gray-600 hover:text-gray-900">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+            </svg>
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Image Gallery -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 rounded-xl overflow-hidden mb-8">
+      <div class="aspect-[4/3] md:row-span-2">
+        <img
+          src={property.images[0].url}
+          alt={property.images[0].caption}
+          class="w-full h-full object-cover hover:opacity-95 transition cursor-pointer"
+        />
+      </div>
+      <div class="hidden md:grid grid-cols-2 gap-2">
+        {property.images.slice(1, 5).map((image, index) => (
+          <div class="aspect-[4/3] relative">
+            <img
+              src={image.url}
+              alt={image.caption}
+              class="w-full h-full object-cover hover:opacity-95 transition cursor-pointer"
+            />
+            {index === 3 && (
+              <button class="absolute bottom-4 right-4 bg-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition">
+                Show all photos
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+      <!-- Left Column - Property Details -->
+      <div class="lg:col-span-2">
+        <!-- Property Info -->
+        <div class="flex items-center justify-between pb-6 border-b border-gray-200">
+          <div>
+            <h2 class="text-xl font-semibold text-gray-900">
+              {property.propertyType} hosted by {property.host.name}
+            </h2>
+            <p class="text-gray-600 mt-1">
+              {property.maxGuests} guests · {property.bedrooms} bedrooms · {property.bathrooms} bathrooms
+            </p>
+          </div>
+          <img
+            src={property.host.avatarUrl}
+            alt={property.host.name}
+            class="w-14 h-14 rounded-full object-cover"
+          />
+        </div>
+        
+        <!-- Highlights -->
+        <div class="py-6 border-b border-gray-200 space-y-4">
+          <div class="flex gap-4">
+            <svg class="w-6 h-6 text-gray-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            <div>
+              <h3 class="font-medium text-gray-900">Entire home</h3>
+              <p class="text-gray-500 text-sm">You'll have the entire place to yourself</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <svg class="w-6 h-6 text-gray-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+            </svg>
+            <div>
+              <h3 class="font-medium text-gray-900">Enhanced Clean</h3>
+              <p class="text-gray-500 text-sm">This host committed to our enhanced cleaning process</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <svg class="w-6 h-6 text-gray-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <div>
+              <h3 class="font-medium text-gray-900">Free cancellation for 48 hours</h3>
+              <p class="text-gray-500 text-sm">Get a full refund if you change your mind</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Description -->
+        <div class="py-6 border-b border-gray-200">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">About this place</h2>
+          <div class="text-gray-600 whitespace-pre-line">
+            {property.description}
+          </div>
+        </div>
+        
+        <!-- Amenities -->
+        <div class="py-6 border-b border-gray-200">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">What this place offers</h2>
+          <div class="grid grid-cols-2 gap-4">
+            {property.amenities.map((amenity) => (
+              <div class="flex items-center gap-3">
+                <span class="text-xl">{amenityIcons[amenity] || '✓'}</span>
+                <span class="text-gray-600">{amenity}</span>
+              </div>
+            ))}
+          </div>
+          <button class="mt-6 px-6 py-3 border border-gray-900 rounded-lg font-medium hover:bg-gray-50 transition">
+            Show all amenities
+          </button>
+        </div>
+        
+        <!-- House Rules -->
+        <div class="py-6 border-b border-gray-200">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">House rules</h2>
+          <ul class="space-y-2">
+            {property.rules.map((rule) => (
+              <li class="flex items-center gap-2 text-gray-600">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                {rule}
+              </li>
+            ))}
+          </ul>
+        </div>
+        
+        <!-- Host Info -->
+        <div class="py-6">
+          <div class="flex items-start gap-4">
+            <img
+              src={property.host.avatarUrl}
+              alt={property.host.name}
+              class="w-16 h-16 rounded-full object-cover"
+            />
+            <div class="flex-1">
+              <h2 class="text-xl font-semibold text-gray-900">Hosted by {property.host.name}</h2>
+              <p class="text-gray-500 text-sm">Joined in {property.host.joinedDate}</p>
+              <div class="flex items-center gap-6 mt-4 text-sm">
+                <div class="flex items-center gap-1">
+                  <svg class="w-4 h-4 text-primary-500" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                  </svg>
+                  <span>{property.reviewCount} Reviews</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                  </svg>
+                  <span>Identity verified</span>
+                </div>
+              </div>
+              <p class="text-gray-600 mt-4">
+                Response rate: {property.host.responseRate}% · Response time: {property.host.responseTime}
+              </p>
+              <button class="mt-4 px-6 py-3 border border-gray-900 rounded-lg font-medium hover:bg-gray-50 transition">
+                Contact Host
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right Column - Booking Card -->
+      <div class="lg:col-span-1">
+        <div class="sticky top-24 bg-white border border-gray-200 rounded-xl shadow-lg p-6">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <span class="text-2xl font-bold text-gray-900">${property.pricePerNight}</span>
+              <span class="text-gray-600"> night</span>
+            </div>
+            <div class="flex items-center gap-1 text-sm">
+              <svg class="w-4 h-4 text-primary-500" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+              </svg>
+              <span class="font-medium">{property.rating}</span>
+              <span class="text-gray-500">({property.reviewCount})</span>
+            </div>
+          </div>
+          
+          <div class="border border-gray-300 rounded-lg overflow-hidden mb-4">
+            <div class="grid grid-cols-2 divide-x divide-gray-300">
+              <div class="p-3">
+                <label class="block text-xs font-semibold text-gray-900">CHECK-IN</label>
+                <input type="date" class="w-full text-sm border-0 p-0 focus:outline-none focus:ring-0" />
+              </div>
+              <div class="p-3">
+                <label class="block text-xs font-semibold text-gray-900">CHECKOUT</label>
+                <input type="date" class="w-full text-sm border-0 p-0 focus:outline-none focus:ring-0" />
+              </div>
+            </div>
+            <div class="border-t border-gray-300 p-3">
+              <label class="block text-xs font-semibold text-gray-900">GUESTS</label>
+              <select class="w-full text-sm border-0 p-0 focus:outline-none focus:ring-0 bg-transparent">
+                <option value="1">1 guest</option>
+                <option value="2">2 guests</option>
+                <option value="3">3 guests</option>
+                <option value="4">4 guests</option>
+                <option value="5">5 guests</option>
+                <option value="6">6 guests</option>
+                <option value="7">7 guests</option>
+                <option value="8">8 guests</option>
+              </select>
+            </div>
+          </div>
+          
+          <button class="w-full bg-gradient-to-r from-primary-500 to-primary-600 text-white py-3 rounded-lg font-semibold hover:from-primary-600 hover:to-primary-700 transition">
+            Reserve
+          </button>
+          
+          <p class="text-center text-sm text-gray-500 mt-4">You won't be charged yet</p>
+          
+          <div class="mt-6 space-y-3 text-sm">
+            <div class="flex justify-between">
+              <span class="text-gray-600 underline">${property.pricePerNight} x 5 nights</span>
+              <span class="text-gray-900">${property.pricePerNight * 5}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600 underline">Cleaning fee</span>
+              <span class="text-gray-900">$50</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600 underline">Service fee</span>
+              <span class="text-gray-900">${Math.round(property.pricePerNight * 5 * 0.12)}</span>
+            </div>
+            <div class="flex justify-between pt-3 border-t border-gray-200 font-semibold">
+              <span>Total before taxes</span>
+              <span>${property.pricePerNight * 5 + 50 + Math.round(property.pricePerNight * 5 * 0.12)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <Footer />
+</BaseLayout>

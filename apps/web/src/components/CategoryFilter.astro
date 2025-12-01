@@ -1,0 +1,26 @@
+---
+export interface Props {
+  categories: Array<{
+    name: string;
+    icon: string;
+    active?: boolean;
+  }>;
+}
+
+const { categories } = Astro.props;
+---
+
+<div class="flex items-center gap-8 overflow-x-auto py-4 scrollbar-hide">
+  {categories.map((category) => (
+    <button
+      class={`flex flex-col items-center gap-2 min-w-fit pb-2 border-b-2 transition ${
+        category.active
+          ? 'border-gray-900 text-gray-900'
+          : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+      }`}
+    >
+      <span class="text-2xl">{category.icon}</span>
+      <span class="text-xs font-medium whitespace-nowrap">{category.name}</span>
+    </button>
+  ))}
+</div>

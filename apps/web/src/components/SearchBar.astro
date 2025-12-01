@@ -1,0 +1,66 @@
+---
+export interface Props {
+  placeholder?: string;
+}
+
+const { placeholder = 'Search destinations' } = Astro.props;
+---
+
+<div class="bg-white rounded-full shadow-lg border border-gray-200 p-2">
+  <form action="/search" method="GET" class="flex flex-col md:flex-row items-stretch md:items-center divide-y md:divide-y-0 md:divide-x divide-gray-200">
+    <!-- Where -->
+    <div class="flex-1 px-4 py-3 md:py-0">
+      <label class="block text-xs font-semibold text-gray-900">Where</label>
+      <input
+        type="text"
+        name="query"
+        placeholder={placeholder}
+        class="w-full text-sm text-gray-600 placeholder-gray-400 border-0 p-0 focus:outline-none focus:ring-0"
+      />
+    </div>
+    
+    <!-- Check in -->
+    <div class="flex-1 px-4 py-3 md:py-0">
+      <label class="block text-xs font-semibold text-gray-900">Check in</label>
+      <input
+        type="date"
+        name="checkIn"
+        class="w-full text-sm text-gray-600 placeholder-gray-400 border-0 p-0 focus:outline-none focus:ring-0"
+      />
+    </div>
+    
+    <!-- Check out -->
+    <div class="flex-1 px-4 py-3 md:py-0">
+      <label class="block text-xs font-semibold text-gray-900">Check out</label>
+      <input
+        type="date"
+        name="checkOut"
+        class="w-full text-sm text-gray-600 placeholder-gray-400 border-0 p-0 focus:outline-none focus:ring-0"
+      />
+    </div>
+    
+    <!-- Guests -->
+    <div class="flex items-center gap-2 px-4 py-3 md:py-0">
+      <div class="flex-1">
+        <label class="block text-xs font-semibold text-gray-900">Who</label>
+        <select name="guests" class="w-full text-sm text-gray-600 border-0 p-0 focus:outline-none focus:ring-0 bg-transparent">
+          <option value="">Add guests</option>
+          <option value="1">1 guest</option>
+          <option value="2">2 guests</option>
+          <option value="3">3 guests</option>
+          <option value="4">4 guests</option>
+          <option value="5">5 guests</option>
+          <option value="6">6+ guests</option>
+        </select>
+      </div>
+      <button
+        type="submit"
+        class="flex items-center justify-center w-12 h-12 bg-primary-500 hover:bg-primary-600 rounded-full text-white transition"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </button>
+    </div>
+  </form>
+</div>
