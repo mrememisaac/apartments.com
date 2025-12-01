@@ -1,0 +1,168 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import PropertyCard from '../components/PropertyCard.astro';
+
+const { searchParams } = Astro.url;
+const query = searchParams.get('query') || '';
+const city = searchParams.get('city') || '';
+const checkIn = searchParams.get('checkIn') || '';
+const checkOut = searchParams.get('checkOut') || '';
+const guests = searchParams.get('guests') || '';
+
+// Sample search results - in production this would fetch from API
+const searchResults = [
+  {
+    id: '1',
+    title: 'Luxury Oceanfront Villa',
+    city: city || 'Malibu',
+    country: 'United States',
+    pricePerNight: 450,
+    rating: 4.9,
+    reviewCount: 128,
+    bedrooms: 4,
+    imageUrl: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800',
+    propertyType: 'Villa',
+  },
+  {
+    id: '2',
+    title: 'Modern Downtown Loft',
+    city: 'New York',
+    country: 'United States',
+    pricePerNight: 275,
+    rating: 4.8,
+    reviewCount: 89,
+    bedrooms: 2,
+    imageUrl: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800',
+    propertyType: 'Apartment',
+  },
+  {
+    id: '3',
+    title: 'Cozy Mountain Cabin',
+    city: 'Aspen',
+    country: 'United States',
+    pricePerNight: 320,
+    rating: 4.95,
+    reviewCount: 156,
+    bedrooms: 3,
+    imageUrl: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800',
+    propertyType: 'Cabin',
+  },
+  {
+    id: '4',
+    title: 'Beachfront Paradise',
+    city: 'Miami Beach',
+    country: 'United States',
+    pricePerNight: 380,
+    rating: 4.7,
+    reviewCount: 67,
+    bedrooms: 3,
+    imageUrl: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800',
+    propertyType: 'House',
+  },
+  {
+    id: '5',
+    title: 'Charming Studio in Paris',
+    city: 'Paris',
+    country: 'France',
+    pricePerNight: 195,
+    rating: 4.85,
+    reviewCount: 234,
+    bedrooms: 1,
+    imageUrl: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800',
+    propertyType: 'Studio',
+  },
+  {
+    id: '6',
+    title: 'Tuscan Countryside Villa',
+    city: 'Florence',
+    country: 'Italy',
+    pricePerNight: 520,
+    rating: 4.92,
+    reviewCount: 178,
+    bedrooms: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
+    propertyType: 'Villa',
+  },
+];
+
+const searchTitle = query || city || 'All Properties';
+---
+
+<BaseLayout title={`Search: ${searchTitle} | Apartments`}>
+  <Header />
+  
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Search Header -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">
+          {searchTitle}
+        </h1>
+        <p class="text-gray-600 mt-1">
+          {searchResults.length} properties found
+          {checkIn && checkOut && ` · ${checkIn} - ${checkOut}`}
+          {guests && ` · ${guests} guests`}
+        </p>
+      </div>
+      
+      <!-- Filters -->
+      <div class="flex items-center gap-3 mt-4 md:mt-0">
+        <button class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:border-gray-400 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+          </svg>
+          Filters
+        </button>
+        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+          <option>Sort by: Recommended</option>
+          <option>Price: Low to High</option>
+          <option>Price: High to Low</option>
+          <option>Rating</option>
+          <option>Newest</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Filter Tags -->
+    <div class="flex flex-wrap gap-2 mb-6">
+      {query && (
+        <span class="inline-flex items-center gap-1 px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-sm">
+          Search: {query}
+          <button class="hover:text-primary-900">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </span>
+      )}
+      {city && (
+        <span class="inline-flex items-center gap-1 px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-sm">
+          City: {city}
+          <button class="hover:text-primary-900">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </span>
+      )}
+    </div>
+    
+    <!-- Results Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {searchResults.map((property) => (
+        <PropertyCard {...property} />
+      ))}
+    </div>
+    
+    <!-- Load More -->
+    <div class="text-center mt-10">
+      <button class="px-8 py-3 border border-gray-900 text-gray-900 rounded-lg font-medium hover:bg-gray-900 hover:text-white transition">
+        Load More Properties
+      </button>
+    </div>
+  </main>
+  
+  <Footer />
+</BaseLayout>
