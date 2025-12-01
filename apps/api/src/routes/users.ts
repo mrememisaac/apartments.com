@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { users, sessions, properties, bookings, favorites } from '@apartments/db/schema';
 import type { Bindings, Variables } from '../index';
 
@@ -139,7 +139,7 @@ usersRoutes.post('/me/favorites', async (c) => {
 
   // Check if already favorited
   const existing = await db.query.favorites.findFirst({
-    where: eq(favorites.propertyId, propertyId),
+    where: and(eq(favorites.propertyId, propertyId), eq(favorites.userId, user.id)),
   });
 
   if (existing) {
@@ -165,7 +165,9 @@ usersRoutes.delete('/me/favorites/:propertyId', async (c) => {
   const db = c.get('db');
   const propertyId = c.req.param('propertyId');
 
-  await db.delete(favorites).where(eq(favorites.propertyId, propertyId));
+  await db.delete(favorites).where(
+    and(eq(favorites.propertyId, propertyId), eq(favorites.userId, user.id))
+  );
 
   return c.json({ success: true });
 });

@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer, real, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
 // Users table
 export const users = sqliteTable('users', {
@@ -94,7 +94,9 @@ export const favorites = sqliteTable('favorites', {
   userId: text('user_id').notNull().references(() => users.id),
   propertyId: text('property_id').notNull().references(() => properties.id),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
-});
+}, (table) => ({
+  userPropertyUnique: uniqueIndex('user_property_unique_idx').on(table.userId, table.propertyId),
+}));
 
 // Messages table
 export const messages = sqliteTable('messages', {

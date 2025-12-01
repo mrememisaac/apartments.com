@@ -124,6 +124,35 @@ bookingsRoutes.post('/', async (c) => {
     specialRequests?: string;
   }>();
 
+  // Validate required fields
+  if (!body.propertyId || !body.checkIn || !body.checkOut || body.guests === undefined) {
+    return c.json({ error: 'Missing required fields: propertyId, checkIn, checkOut, guests' }, 400);
+  }
+
+  // Validate guests is a positive integer
+  if (!Number.isInteger(body.guests) || body.guests < 1) {
+    return c.json({ error: 'Guests must be a positive integer' }, 400);
+  }
+
+  // Validate date format and validity
+  const checkIn = new Date(body.checkIn);
+  const checkOut = new Date(body.checkOut);
+
+  if (isNaN(checkIn.getTime()) || isNaN(checkOut.getTime())) {
+    return c.json({ error: 'Invalid date format. Use ISO 8601 format (YYYY-MM-DD)' }, 400);
+  }
+
+  // Validate dates are not in the past
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  if (checkIn < today) {
+    return c.json({ error: 'Check-in date cannot be in the past' }, 400);
+  }
+
+  if (checkIn >= checkOut) {
+    return c.json({ error: 'Check-out must be after check-in' }, 400);
+  }
+
   // Get property
   const property = await db.query.properties.findFirst({
     where: eq(properties.id, body.propertyId),
@@ -135,13 +164,6 @@ bookingsRoutes.post('/', async (c) => {
 
   if (property.status !== 'active') {
     return c.json({ error: 'Property is not available' }, 400);
-  }
-
-  const checkIn = new Date(body.checkIn);
-  const checkOut = new Date(body.checkOut);
-
-  if (checkIn >= checkOut) {
-    return c.json({ error: 'Check-out must be after check-in' }, 400);
   }
 
   if (body.guests > property.maxGuests) {

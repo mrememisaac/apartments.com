@@ -5,6 +5,24 @@ import type { Bindings, Variables } from '../index';
 
 export const searchRoutes = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
+// Helper function to escape SQL LIKE wildcards
+function escapeLikePattern(input: string): string {
+  return input.replace(/[%_\\]/g, '\\$&');
+}
+
+// Helper function to validate and parse number
+function parseNumber(value: string | undefined): number | null {
+  if (!value) return null;
+  const num = parseFloat(value);
+  return isNaN(num) ? null : num;
+}
+
+function parseInt10(value: string | undefined): number | null {
+  if (!value) return null;
+  const num = parseInt(value, 10);
+  return isNaN(num) ? null : num;
+}
+
 // Search properties
 searchRoutes.get('/', async (c) => {
   const db = c.get('db');
@@ -30,46 +48,52 @@ searchRoutes.get('/', async (c) => {
   const conditions: any[] = [eq(properties.status, 'active')];
 
   if (query) {
+    const escapedQuery = escapeLikePattern(query);
     conditions.push(
       or(
-        like(properties.title, `%${query}%`),
-        like(properties.description, `%${query}%`),
-        like(properties.city, `%${query}%`),
-        like(properties.country, `%${query}%`)
+        like(properties.title, `%${escapedQuery}%`),
+        like(properties.description, `%${escapedQuery}%`),
+        like(properties.city, `%${escapedQuery}%`),
+        like(properties.country, `%${escapedQuery}%`)
       )
     );
   }
 
   if (city) {
-    conditions.push(like(properties.city, `%${city}%`));
+    conditions.push(like(properties.city, `%${escapeLikePattern(city)}%`));
   }
 
   if (country) {
-    conditions.push(like(properties.country, `%${country}%`));
+    conditions.push(like(properties.country, `%${escapeLikePattern(country)}%`));
   }
 
   if (propertyType) {
     conditions.push(eq(properties.propertyType, propertyType as any));
   }
 
-  if (minPrice) {
-    conditions.push(gte(properties.pricePerNight, parseFloat(minPrice)));
+  const minPriceNum = parseNumber(minPrice);
+  if (minPriceNum !== null && minPriceNum >= 0) {
+    conditions.push(gte(properties.pricePerNight, minPriceNum));
   }
 
-  if (maxPrice) {
-    conditions.push(lte(properties.pricePerNight, parseFloat(maxPrice)));
+  const maxPriceNum = parseNumber(maxPrice);
+  if (maxPriceNum !== null && maxPriceNum >= 0) {
+    conditions.push(lte(properties.pricePerNight, maxPriceNum));
   }
 
-  if (bedrooms) {
-    conditions.push(gte(properties.bedrooms, parseInt(bedrooms)));
+  const bedroomsNum = parseInt10(bedrooms);
+  if (bedroomsNum !== null && bedroomsNum >= 0) {
+    conditions.push(gte(properties.bedrooms, bedroomsNum));
   }
 
-  if (bathrooms) {
-    conditions.push(gte(properties.bathrooms, parseFloat(bathrooms)));
+  const bathroomsNum = parseNumber(bathrooms);
+  if (bathroomsNum !== null && bathroomsNum >= 0) {
+    conditions.push(gte(properties.bathrooms, bathroomsNum));
   }
 
-  if (maxGuests) {
-    conditions.push(gte(properties.maxGuests, parseInt(maxGuests)));
+  const maxGuestsNum = parseInt10(maxGuests);
+  if (maxGuestsNum !== null && maxGuestsNum >= 0) {
+    conditions.push(gte(properties.maxGuests, maxGuestsNum));
   }
 
   const propertyList = await db
